@@ -75,11 +75,28 @@ export default {
             transform: "scale(1)",
           },
         },
+        float: {
+          "0%": {
+            transform: "translateY(0) scale(1)",
+            opacity: "0",
+          },
+          "10%": {
+            opacity: "1",
+          },
+          "90%": {
+            opacity: "1",
+          },
+          "100%": {
+            transform: "translateY(-100vh) scale(1.2)",
+            opacity: "0",
+          },
+        },
       },
       animation: {
         "fade-up": "fade-up 0.5s ease-out",
         "fade-in": "fade-in 0.3s ease-out",
         "scale-in": "scale-in 0.2s ease-out",
+        float: "float var(--duration) linear var(--delay) infinite",
       },
     },
   },

@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { BookingConfirmation } from "./BookingConfirmation";
 import { toast } from "sonner";
+import { sendBookingConfirmation } from "@/utils/email";
 
 interface BookingDetails {
   service: string | null;
@@ -28,8 +29,9 @@ export const ClientForm = ({
     phone: "",
   });
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Basic validation
@@ -52,8 +54,24 @@ export const ClientForm = ({
       return;
     }
 
-    setShowConfirmation(true);
-    onOpenChange(false);
+    setIsSubmitting(true);
+    try {
+      if (bookingDetails.date) {
+        await sendBookingConfirmation({
+          service: bookingDetails.service || "",
+          date: bookingDetails.date,
+          time: bookingDetails.time || "",
+          clientName: `${formData.firstName} ${formData.lastName}`,
+          clientEmail: formData.email,
+        });
+      }
+      setShowConfirmation(true);
+      onOpenChange(false);
+    } catch (error) {
+      toast.error("Failed to confirm booking. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -61,7 +79,9 @@ export const ClientForm = ({
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-[500px] bg-background/95 backdrop-blur-sm">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-light">Your Details</DialogTitle>
+            <DialogTitle className="text-2xl font-light bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Your Details
+            </DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
@@ -109,10 +129,21 @@ export const ClientForm = ({
               />
             </div>
             <div className="flex justify-end gap-4">
-              <Button variant="outline" type="button" onClick={() => onOpenChange(false)}>
+              <Button
+                variant="outline"
+                type="button"
+                onClick={() => onOpenChange(false)}
+                disabled={isSubmitting}
+              >
                 Cancel
               </Button>
-              <Button type="submit">Confirm Booking</Button>
+              <Button
+                type="submit"
+                className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Confirming..." : "Confirm Booking"}
+              </Button>
             </div>
           </form>
         </DialogContent>
