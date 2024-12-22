@@ -4,10 +4,10 @@ import { Resend } from 'resend';
 const RESEND_API_KEY = import.meta.env.VITE_RESEND_API_KEY;
 
 if (!RESEND_API_KEY) {
-  console.error('Missing RESEND_API_KEY environment variable');
+  console.warn('Missing RESEND_API_KEY environment variable. Email functionality will be disabled.');
 }
 
-const resend = new Resend(RESEND_API_KEY);
+const resend = RESEND_API_KEY ? new Resend(RESEND_API_KEY) : null;
 
 interface BookingEmailData {
   service: string;
@@ -24,6 +24,10 @@ interface ContactEmailData {
 }
 
 export const sendBookingConfirmation = async (data: BookingEmailData) => {
+  if (!resend) {
+    throw new Error('Email service is not configured. Please set up your RESEND_API_KEY.');
+  }
+
   try {
     await resend.emails.send({
       from: 'booking@immacleans.com',
@@ -43,11 +47,15 @@ export const sendBookingConfirmation = async (data: BookingEmailData) => {
     });
   } catch (error) {
     console.error('Error sending booking confirmation:', error);
-    throw error;
+    throw new Error('Failed to send booking confirmation email. Please try again later.');
   }
 };
 
 export const sendContactMessage = async (data: ContactEmailData) => {
+  if (!resend) {
+    throw new Error('Email service is not configured. Please set up your RESEND_API_KEY.');
+  }
+
   try {
     await resend.emails.send({
       from: 'contact@immacleans.com',
@@ -62,6 +70,6 @@ export const sendContactMessage = async (data: ContactEmailData) => {
     });
   } catch (error) {
     console.error('Error sending contact message:', error);
-    throw error;
+    throw new Error('Failed to send contact message. Please try again later.');
   }
 };
