@@ -41,8 +41,8 @@ export const Contact = () => {
   };
 
   return (
-    <section className="py-20 px-4">
-      <div className="max-w-xl mx-auto bg-white/20 backdrop-blur-md p-8 rounded-lg">
+    <section className="py-20 px-4 relative z-20">
+      <div className="max-w-xl mx-auto bg-white/20 backdrop-blur-md p-8 rounded-lg shadow-lg">
         <h2 className="text-3xl font-light text-center mb-8 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
           Get in Touch
         </h2>
@@ -50,7 +50,7 @@ export const Contact = () => {
           <div className="space-y-2">
             <Input
               placeholder="Your Name"
-              className="bg-white/50"
+              className="bg-white/50 backdrop-blur-sm"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               required
@@ -60,7 +60,7 @@ export const Contact = () => {
             <Input
               type="email"
               placeholder="Email"
-              className="bg-white/50"
+              className="bg-white/50 backdrop-blur-sm"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               required
@@ -69,7 +69,7 @@ export const Contact = () => {
           <div className="space-y-2">
             <Textarea
               placeholder="Message"
-              className="bg-white/50 min-h-[120px]"
+              className="bg-white/50 backdrop-blur-sm min-h-[120px]"
               value={formData.message}
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
               required
