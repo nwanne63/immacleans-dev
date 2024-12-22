@@ -1,6 +1,13 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(import.meta.env.VITE_RESEND_API_KEY);
+// Check if API key exists and create Resend instance
+const RESEND_API_KEY = import.meta.env.VITE_RESEND_API_KEY;
+
+if (!RESEND_API_KEY) {
+  console.error('Missing RESEND_API_KEY environment variable');
+}
+
+const resend = new Resend(RESEND_API_KEY);
 
 interface BookingEmailData {
   service: string;
