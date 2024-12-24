@@ -1,13 +1,4 @@
-import { Resend } from 'resend';
-
-// Check if API key exists and create Resend instance
-const RESEND_API_KEY = import.meta.env.VITE_RESEND_API_KEY;
-
-if (!RESEND_API_KEY) {
-  console.warn('Missing RESEND_API_KEY environment variable. Email functionality will be disabled.');
-}
-
-const resend = RESEND_API_KEY ? new Resend(RESEND_API_KEY) : null;
+import emailjs from '@emailjs/browser';
 
 interface BookingEmailData {
   service: string;
@@ -23,53 +14,61 @@ interface ContactEmailData {
   message: string;
 }
 
-export const sendBookingConfirmation = async (data: BookingEmailData) => {
-  if (!resend) {
-    throw new Error('Email service is not configured. Please set up your RESEND_API_KEY.');
-  }
+const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+const EMAILJS_TEMPLATE_ID_BOOKING = import.meta.env.VITE_EMAILJS_TEMPLATE_ID_BOOKING;
+const EMAILJS_TEMPLATE_ID_CONTACT = import.meta.env.VITE_EMAILJS_TEMPLATE_ID_CONTACT;
+const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
+if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID_BOOKING || !EMAILJS_TEMPLATE_ID_CONTACT || !EMAILJS_PUBLIC_KEY) {
+  console.warn('Missing EmailJS configuration. Email functionality will be disabled.');
+}
+
+export const sendBookingConfirmation = async (data: BookingEmailData) => {
   try {
-    await resend.emails.send({
-      from: 'booking@immacleans.com',
-      to: data.clientEmail,
-      subject: 'Booking Confirmation - ImmaCleans',
-      html: `
-        <h1>Booking Confirmation</h1>
-        <p>Dear ${data.clientName},</p>
-        <p>Your booking has been confirmed:</p>
-        <ul>
-          <li>Service: ${data.service}</li>
-          <li>Date: ${data.date.toLocaleDateString()}</li>
-          <li>Time: ${data.time}</li>
-        </ul>
-        <p>Thank you for choosing ImmaCleans!</p>
-      `,
-    });
+    const templateParams = {
+      to_email: data.clientEmail,
+      to_name: data.clientName,
+      service_type: data.service,
+      booking_date: data.date.toLocaleDateString(),
+      booking_time: data.time,
+    };
+
+    const response = await emailjs.send(
+      EMAILJS_SERVICE_ID,
+      EMAILJS_TEMPLATE_ID_BOOKING,
+      templateParams,
+      EMAILJS_PUBLIC_KEY
+    );
+
+    if (response.status !== 200) {
+      throw new Error('Failed to send email');
+    }
   } catch (error) {
     console.error('Error sending booking confirmation:', error);
-    throw new Error('Failed to send booking confirmation email. Please try again later.');
+    throw new Error('Failed to send booking confirmation email');
   }
 };
 
 export const sendContactMessage = async (data: ContactEmailData) => {
-  if (!resend) {
-    throw new Error('Email service is not configured. Please set up your RESEND_API_KEY.');
-  }
-
   try {
-    await resend.emails.send({
-      from: 'contact@immacleans.com',
-      to: 'support@immacleans.com',
-      subject: 'New Contact Form Submission',
-      html: `
-        <h1>New Contact Form Submission</h1>
-        <p>From: ${data.name} (${data.email})</p>
-        <p>Message:</p>
-        <p>${data.message}</p>
-      `,
-    });
+    const templateParams = {
+      from_name: data.name,
+      from_email: data.email,
+      message: data.message,
+    };
+
+    const response = await emailjs.send(
+      EMAILJS_SERVICE_ID,
+      EMAILJS_TEMPLATE_ID_CONTACT,
+      templateParams,
+      EMAILJS_PUBLIC_KEY
+    );
+
+    if (response.status !== 200) {
+      throw new Error('Failed to send email');
+    }
   } catch (error) {
     console.error('Error sending contact message:', error);
-    throw new Error('Failed to send contact message. Please try again later.');
+    throw new Error('Failed to send contact message');
   }
 };
