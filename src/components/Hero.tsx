@@ -6,7 +6,7 @@ export const Hero = () => {
   const [showServiceSelection, setShowServiceSelection] = useState(false);
 
   return (
-    <section className="min-h-[80vh] flex items-center justify-center px-4 animate-fade-in">
+    <section className="min-h-screen flex items-center justify-center px-4 animate-fade-in">
       <div className="max-w-4xl mx-auto text-center">
         <h1 className="text-4xl md:text-6xl font-light mb-6 tracking-tight">
           Professional Cleaning Services
