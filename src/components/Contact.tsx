@@ -5,8 +5,14 @@ import { useState } from "react";
 import { sendContactMessage } from "@/utils/email";
 import { toast } from "sonner";
 
+interface ContactFormData {
+  name: string;
+  email: string;
+  message: string;
+}
+
 export const Contact = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ContactFormData>({
     name: "",
     email: "",
     message: "",
@@ -30,25 +36,28 @@ export const Contact = () => {
 
     setIsSubmitting(true);
     try {
-      await sendContactMessage(formData);
+      await sendContactMessage({
+        name: formData.name,
+        email: formData.email,
+        message: formData.message
+      });
       
       // Submit to Netlify Forms
       const formElement = e.target as HTMLFormElement;
-      const formData = new FormData(formElement);
+      const netlifyFormData = new FormData(formElement);
       
-      fetch("/", {
+      await fetch("/", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams(formData as any).toString(),
-      })
-        .then(() => {
-          toast.success("Message sent successfully!");
-          setFormData({ name: "", email: "", message: "" });
-        })
-        .catch((error) => console.log(error));
+        body: new URLSearchParams(netlifyFormData as any).toString(),
+      });
+      
+      toast.success("Message sent successfully!");
+      setFormData({ name: "", email: "", message: "" });
         
     } catch (error) {
       toast.error("Failed to send message. Please try again.");
+      console.error("Form submission error:", error);
     } finally {
       setIsSubmitting(false);
     }
