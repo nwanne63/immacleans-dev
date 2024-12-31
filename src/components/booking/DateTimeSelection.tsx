@@ -24,6 +24,11 @@ export const DateTimeSelection = ({
     }
   };
 
+  // Function to disable past dates
+  const disabledDays = {
+    before: new Date(),
+  };
+
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
@@ -37,11 +42,12 @@ export const DateTimeSelection = ({
                 <CalendarIcon className="h-5 w-5" />
                 <span>Select a date</span>
               </div>
-              <div className="flex justify-center">
+              <div className="flex items-center justify-center">
                 <Calendar
                   mode="single"
                   selected={selectedDate}
                   onSelect={setSelectedDate}
+                  disabled={disabledDays}
                   className="rounded-md border w-full max-w-[350px]"
                 />
               </div>
@@ -63,7 +69,7 @@ export const DateTimeSelection = ({
         bookingDetails={{
           service: selectedService,
           date: selectedDate,
-          time: "9:00 AM", // Default time since we removed time selection
+          time: "9:00 AM",
         }}
       />
     </>
