@@ -1,4 +1,5 @@
 import { Instagram } from "lucide-react";
+import { Separator } from "./ui/separator";
 
 export const Footer = () => {
   return (
@@ -23,6 +24,10 @@ export const Footer = () => {
             </a>
           </div>
         </div>
+        <Separator className="my-8" />
+        <p className="text-sm text-center text-muted-foreground">
+          © 2024 by Immas Cleaning Services Limited | All Rights Reserved
+        </p>
       </div>
     </footer>
   );
