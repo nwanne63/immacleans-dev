@@ -31,8 +31,22 @@ export const Contact = () => {
     setIsSubmitting(true);
     try {
       await sendContactMessage(formData);
-      toast.success("Message sent successfully!");
-      setFormData({ name: "", email: "", message: "" });
+      
+      // Submit to Netlify Forms
+      const formElement = e.target as HTMLFormElement;
+      const formData = new FormData(formElement);
+      
+      fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(formData as any).toString(),
+      })
+        .then(() => {
+          toast.success("Message sent successfully!");
+          setFormData({ name: "", email: "", message: "" });
+        })
+        .catch((error) => console.log(error));
+        
     } catch (error) {
       toast.error("Failed to send message. Please try again.");
     } finally {
@@ -46,9 +60,23 @@ export const Contact = () => {
         <h2 className="text-3xl font-light text-center mb-8 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
           Get in Touch
         </h2>
-        <form className="space-y-6" onSubmit={handleSubmit}>
+        <form 
+          className="space-y-6" 
+          onSubmit={handleSubmit}
+          name="contact"
+          method="POST"
+          data-netlify="true"
+          netlify-honeypot="bot-field"
+        >
+          <input type="hidden" name="form-name" value="contact" />
+          <p className="hidden">
+            <label>
+              Don't fill this out if you're human: <input name="bot-field" />
+            </label>
+          </p>
           <div className="space-y-2">
             <Input
+              name="name"
               placeholder="Your Name"
               className="bg-white/50 backdrop-blur-sm"
               value={formData.name}
@@ -58,6 +86,7 @@ export const Contact = () => {
           </div>
           <div className="space-y-2">
             <Input
+              name="email"
               type="email"
               placeholder="Email"
               className="bg-white/50 backdrop-blur-sm"
@@ -68,6 +97,7 @@ export const Contact = () => {
           </div>
           <div className="space-y-2">
             <Textarea
+              name="message"
               placeholder="Message"
               className="bg-white/50 backdrop-blur-sm min-h-[120px]"
               value={formData.message}

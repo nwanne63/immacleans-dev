@@ -65,8 +65,25 @@ export const ClientForm = ({
           clientEmail: formData.email,
         });
       }
-      setShowConfirmation(true);
-      onOpenChange(false);
+
+      // Submit to Netlify Forms
+      const formElement = e.target as HTMLFormElement;
+      const formDataForNetlify = new FormData(formElement);
+      formDataForNetlify.append("service", bookingDetails.service || "");
+      formDataForNetlify.append("date", bookingDetails.date?.toString() || "");
+      formDataForNetlify.append("time", bookingDetails.time || "");
+      
+      fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(formDataForNetlify as any).toString(),
+      })
+        .then(() => {
+          setShowConfirmation(true);
+          onOpenChange(false);
+        })
+        .catch((error) => console.log(error));
+
     } catch (error) {
       toast.error("Failed to confirm booking. Please try again.");
     } finally {
@@ -83,12 +100,26 @@ export const ClientForm = ({
               Your Details
             </DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form 
+            onSubmit={handleSubmit} 
+            className="space-y-6"
+            name="booking"
+            method="POST"
+            data-netlify="true"
+            netlify-honeypot="bot-field"
+          >
+            <input type="hidden" name="form-name" value="booking" />
+            <p className="hidden">
+              <label>
+                Don't fill this out if you're human: <input name="bot-field" />
+              </label>
+            </p>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="firstName">First Name</Label>
                 <Input
                   id="firstName"
+                  name="firstName"
                   value={formData.firstName}
                   onChange={(e) =>
                     setFormData({ ...formData, firstName: e.target.value })
@@ -100,6 +131,7 @@ export const ClientForm = ({
                 <Label htmlFor="lastName">Last Name</Label>
                 <Input
                   id="lastName"
+                  name="lastName"
                   value={formData.lastName}
                   onChange={(e) =>
                     setFormData({ ...formData, lastName: e.target.value })
@@ -112,6 +144,7 @@ export const ClientForm = ({
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -122,6 +155,7 @@ export const ClientForm = ({
               <Label htmlFor="phone">Phone Number</Label>
               <Input
                 id="phone"
+                name="phone"
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
