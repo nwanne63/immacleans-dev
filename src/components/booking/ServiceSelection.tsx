@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, User } from "lucide-react";
 import { useState } from "react";
 import { DateTimeSelection } from "./DateTimeSelection";
 
@@ -8,22 +7,18 @@ const services = [
   {
     title: "Regular Cleaning",
     description: "Weekly or bi-weekly cleaning services",
-    price: "From £60",
   },
   {
     title: "Deep Cleaning",
     description: "Thorough cleaning of every corner",
-    price: "From £120",
   },
   {
     title: "Move In/Out",
     description: "Comprehensive cleaning for transitions",
-    price: "From £150",
   },
   {
     title: "One-time Clean",
     description: "Perfect for special occasions",
-    price: "From £80",
   },
 ];
 
@@ -45,7 +40,7 @@ export const ServiceSelection = ({
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-[600px] p-0 gap-0 bg-background/95 backdrop-blur-sm">
+        <DialogContent className="sm:max-w-[600px] p-0 gap-0 bg-background/95 backdrop-blur-sm max-h-[80vh] overflow-auto">
           <DialogHeader className="p-6 pb-4">
             <DialogTitle className="text-2xl font-light">Choose a Service</DialogTitle>
           </DialogHeader>
@@ -57,7 +52,6 @@ export const ServiceSelection = ({
               >
                 <h3 className="text-lg font-medium mb-2">{service.title}</h3>
                 <p className="text-muted-foreground mb-4">{service.description}</p>
-                <p className="font-medium">{service.price}</p>
                 <Button
                   className="w-full mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                   onClick={() => handleServiceSelect(service.title)}

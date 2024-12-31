@@ -2,10 +2,19 @@ import { Hero } from "@/components/Hero";
 import { Services } from "@/components/Services";
 import { Contact } from "@/components/Contact";
 import { FloatingBubbles } from "@/components/FloatingBubbles";
+import { Footer } from "@/components/Footer";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background text-foreground relative overflow-auto">
+    <div 
+      className="min-h-screen bg-background text-foreground relative overflow-auto"
+      style={{
+        backgroundImage: 'url("/cleaning-bg.jpg")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
       <FloatingBubbles />
       <div className="fixed top-6 left-6 flex items-center gap-2 animate-fade-in z-10">
         <img 
@@ -18,6 +27,7 @@ const Index = () => {
         <Hero />
         <Services />
         <Contact />
+        <Footer />
       </div>
     </div>
   );

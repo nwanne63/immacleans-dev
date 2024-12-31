@@ -1,17 +1,9 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Calendar as CalendarIcon, Clock } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { useState } from "react";
 import { ClientForm } from "./ClientForm";
-
-const timeSlots = [
-  "10:00 AM - 12:00 PM",
-  "12:00 PM - 2:00 PM",
-  "2:00 PM - 4:00 PM",
-  "4:00 PM - 6:00 PM",
-  "6:00 PM - 8:00 PM",
-];
 
 export const DateTimeSelection = ({
   open,
@@ -23,11 +15,10 @@ export const DateTimeSelection = ({
   selectedService: string | null;
 }) => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [showClientForm, setShowClientForm] = useState(false);
 
   const handleContinue = () => {
-    if (selectedDate && selectedTime) {
+    if (selectedDate) {
       setShowClientForm(true);
       onOpenChange(false);
     }
@@ -38,7 +29,7 @@ export const DateTimeSelection = ({
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-[600px] bg-background/95 backdrop-blur-sm">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-light">Pick a Date & Time</DialogTitle>
+            <DialogTitle className="text-2xl font-light">Pick a Date</DialogTitle>
           </DialogHeader>
           <div className="grid gap-6 py-4">
             <div className="space-y-4">
@@ -46,36 +37,18 @@ export const DateTimeSelection = ({
                 <CalendarIcon className="h-5 w-5" />
                 <span>Select a date</span>
               </div>
-              <Calendar
-                mode="single"
-                selected={selectedDate}
-                onSelect={setSelectedDate}
-                className="rounded-md border"
-              />
-            </div>
-            {selectedDate && (
-              <div className="space-y-4 animate-fade-in">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Clock className="h-5 w-5" />
-                  <span>Select a time slot</span>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {timeSlots.map((slot) => (
-                    <Button
-                      key={slot}
-                      variant={selectedTime === slot ? "default" : "outline"}
-                      className="justify-start"
-                      onClick={() => setSelectedTime(slot)}
-                    >
-                      {slot}
-                    </Button>
-                  ))}
-                </div>
+              <div className="flex justify-center">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={setSelectedDate}
+                  className="rounded-md border w-full max-w-[350px]"
+                />
               </div>
-            )}
+            </div>
             <Button
               className="mt-4"
-              disabled={!selectedDate || !selectedTime}
+              disabled={!selectedDate}
               onClick={handleContinue}
             >
               Continue
@@ -90,7 +63,7 @@ export const DateTimeSelection = ({
         bookingDetails={{
           service: selectedService,
           date: selectedDate,
-          time: selectedTime,
+          time: "9:00 AM", // Default time since we removed time selection
         }}
       />
     </>
