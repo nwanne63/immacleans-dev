@@ -25,15 +25,15 @@ const services = [
 
 export const Services = () => {
   return (
-    <section className="py-20 px-4 bg-white/50 backdrop-blur-sm">
+    <section className="py-20 px-4 bg-white/80 backdrop-blur-sm">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-light text-center mb-16">Our Services</h2>
+        <h2 className="text-3xl md:text-4xl font-medium text-center mb-16 text-primary">Our Services</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {services.map((service) => (
-            <div key={service.title} className="p-6 rounded-lg bg-white/30 backdrop-blur-sm animate-fade-up">
+            <div key={service.title} className="p-6 rounded-lg bg-white/90 backdrop-blur-sm shadow-lg animate-fade-up">
               <service.icon className="w-10 h-10 mb-4 text-primary" />
-              <h3 className="text-xl font-medium mb-2">{service.title}</h3>
-              <p className="text-muted-foreground">{service.description}</p>
+              <h3 className="text-xl font-medium mb-2 text-primary">{service.title}</h3>
+              <p className="text-primary/80 font-medium">{service.description}</p>
             </div>
           ))}
         </div>

@@ -9,7 +9,7 @@ const Index = () => {
     <div 
       className="min-h-screen bg-background text-foreground relative overflow-auto"
       style={{
-        backgroundImage: 'url("/cleaning-bg.jpg")',
+        backgroundImage: 'linear-gradient(rgba(250, 250, 248, 0.9), rgba(250, 250, 248, 0.9)), url("/cleaning-bg.jpg")',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed'
