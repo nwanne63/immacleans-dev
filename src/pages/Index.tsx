@@ -3,6 +3,7 @@ import { Services } from "@/components/Services";
 import { Contact } from "@/components/Contact";
 import { FloatingBubbles } from "@/components/FloatingBubbles";
 import { Footer } from "@/components/Footer";
+import { ShowcaseCarousel } from "@/components/ShowcaseCarousel";
 
 const Index = () => {
   return (
@@ -26,6 +27,7 @@ const Index = () => {
       <div className="relative z-10">
         <Hero />
         <Services />
+        <ShowcaseCarousel />
         <Contact />
         <Footer />
       </div>
