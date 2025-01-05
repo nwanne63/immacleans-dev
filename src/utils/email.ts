@@ -19,6 +19,9 @@ const EMAILJS_TEMPLATE_ID_BOOKING = import.meta.env.VITE_EMAILJS_TEMPLATE_ID_BOO
 const EMAILJS_TEMPLATE_ID_CONTACT = import.meta.env.VITE_EMAILJS_TEMPLATE_ID_CONTACT;
 const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
+// Initialize EmailJS with public key
+emailjs.init(EMAILJS_PUBLIC_KEY);
+
 if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID_BOOKING || !EMAILJS_TEMPLATE_ID_CONTACT || !EMAILJS_PUBLIC_KEY) {
   console.warn('Missing EmailJS configuration. Email functionality will be disabled.');
 }
