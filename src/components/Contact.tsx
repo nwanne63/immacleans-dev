@@ -65,7 +65,7 @@ export const Contact = () => {
         <h2 className="text-3xl font-light text-center mb-8 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
           Get in Touch
         </h2>
-        <form className="space-y-6" onSubmit={handleSubmit}>
+        <form className="space-y-6" name="contact" netlify hidden onSubmit={handleSubmit}>
           <div className="space-y-2">
             <Input
               name="name"
