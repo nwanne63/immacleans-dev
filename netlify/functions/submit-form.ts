@@ -34,7 +34,7 @@ export const handler: Handler = async (event) => {
     const siteUrl = process.env.URL || process.env.DEPLOY_URL || "http://localhost:8888";
 
     // Submit to Netlify Forms API
-    const response = await fetch(`${siteUrl}/`, {
+    const response = await fetch(`${siteUrl}/?form-name=${formName}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
