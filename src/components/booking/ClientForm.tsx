@@ -89,7 +89,7 @@ export const ClientForm = ({
               Your Details
             </DialogTitle>
           </DialogHeader>
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          <form className="space-y-6" name="contact" netlify onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="firstName">First Name</Label>
