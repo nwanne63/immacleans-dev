@@ -28,15 +28,22 @@ export const handler: Handler = async (event) => {
       }
     });
 
+    // Get the site URL from environment variables or use a default
+    const siteUrl = process.env.URL || process.env.DEPLOY_URL || 'http://localhost:8888';
+
     // Submit to Netlify's Forms API
-    const response = await fetch('/', {
+    const response = await fetch(`${siteUrl}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      headers: { 
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/json'
+      },
       body: netlifyFormData.toString(),
     });
 
     if (!response.ok) {
-      throw new Error('Failed to submit to Netlify Forms');
+      console.error('Netlify Forms submission failed:', await response.text());
+      throw new Error(`Failed to submit to Netlify Forms: ${response.status} ${response.statusText}`);
     }
 
     return {
@@ -47,7 +54,10 @@ export const handler: Handler = async (event) => {
     console.error('Form submission error:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ message: "Failed to process form submission" }),
+      body: JSON.stringify({ 
+        message: "Failed to process form submission",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      }),
     };
   }
 };
