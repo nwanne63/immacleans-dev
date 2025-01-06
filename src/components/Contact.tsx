@@ -35,13 +35,13 @@ export const Contact = () => {
 
     setIsSubmitting(true);
     try {
-      const formElement = e.target as HTMLFormElement;
-      const netlifyFormData = new FormData(formElement);
-      
-      const response = await fetch("/", {
+      const response = await fetch("/.netlify/functions/submit-form", {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams(netlifyFormData as any).toString(),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          form: "contact",
+          ...formData,
+        }),
       });
 
       if (!response.ok) {
@@ -65,21 +65,7 @@ export const Contact = () => {
         <h2 className="text-3xl font-light text-center mb-8 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
           Get in Touch
         </h2>
-        <form 
-          className="space-y-6" 
-          onSubmit={handleSubmit}
-          name="contact"
-          method="POST"
-          data-netlify="true"
-          netlify-honeypot="bot-field"
-          action="/"
-        >
-          <input type="hidden" name="form-name" value="contact" />
-          <p className="hidden">
-            <label>
-              Don't fill this out if you're human: <input name="bot-field" />
-            </label>
-          </p>
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-2">
             <Input
               name="name"

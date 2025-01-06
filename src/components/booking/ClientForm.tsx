@@ -55,16 +55,14 @@ export const ClientForm = ({
 
     setIsSubmitting(true);
     try {
-      const formElement = e.target as HTMLFormElement;
-      const formDataForNetlify = new FormData(formElement);
-      formDataForNetlify.append("service", bookingDetails.service || "");
-      formDataForNetlify.append("date", bookingDetails.date?.toString() || "");
-      formDataForNetlify.append("time", bookingDetails.time || "");
-      
-      const response = await fetch("/", {
+      const response = await fetch("/.netlify/functions/submit-form", {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams(formDataForNetlify as any).toString(),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          form: "booking",
+          ...formData,
+          ...bookingDetails,
+        }),
       });
 
       if (!response.ok) {
@@ -91,20 +89,7 @@ export const ClientForm = ({
               Your Details
             </DialogTitle>
           </DialogHeader>
-          <form 
-            onSubmit={handleSubmit} 
-            className="space-y-6"
-            name="booking"
-            method="POST"
-            data-netlify="true"
-            netlify-honeypot="bot-field"
-          >
-            <input type="hidden" name="form-name" value="booking" />
-            <p className="hidden">
-              <label>
-                Don't fill this out if you're human: <input name="bot-field" />
-              </label>
-            </p>
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="firstName">First Name</Label>
