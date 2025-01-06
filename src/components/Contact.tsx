@@ -2,7 +2,6 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { useState } from "react";
-import { sendContactMessage } from "@/utils/email";
 import { toast } from "sonner";
 
 interface ContactFormData {
@@ -36,21 +35,18 @@ export const Contact = () => {
 
     setIsSubmitting(true);
     try {
-      await sendContactMessage({
-        name: formData.name,
-        email: formData.email,
-        message: formData.message
-      });
-      
-      // Submit to Netlify Forms
       const formElement = e.target as HTMLFormElement;
       const netlifyFormData = new FormData(formElement);
       
-      await fetch("/", {
+      const response = await fetch("/", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams(netlifyFormData as any).toString(),
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit form');
+      }
       
       toast.success("Message sent successfully!");
       setFormData({ name: "", email: "", message: "" });

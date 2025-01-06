@@ -5,7 +5,6 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { BookingConfirmation } from "./BookingConfirmation";
 import { toast } from "sonner";
-import { sendBookingConfirmation } from "@/utils/email";
 
 interface BookingDetails {
   service: string | null;
@@ -56,36 +55,28 @@ export const ClientForm = ({
 
     setIsSubmitting(true);
     try {
-      if (bookingDetails.date) {
-        await sendBookingConfirmation({
-          service: bookingDetails.service || "",
-          date: bookingDetails.date,
-          time: bookingDetails.time || "",
-          clientName: `${formData.firstName} ${formData.lastName}`,
-          clientEmail: formData.email,
-        });
-      }
-
-      // Submit to Netlify Forms
       const formElement = e.target as HTMLFormElement;
       const formDataForNetlify = new FormData(formElement);
       formDataForNetlify.append("service", bookingDetails.service || "");
       formDataForNetlify.append("date", bookingDetails.date?.toString() || "");
       formDataForNetlify.append("time", bookingDetails.time || "");
       
-      fetch("/", {
+      const response = await fetch("/", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams(formDataForNetlify as any).toString(),
-      })
-        .then(() => {
-          setShowConfirmation(true);
-          onOpenChange(false);
-        })
-        .catch((error) => console.log(error));
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit form');
+      }
+
+      setShowConfirmation(true);
+      onOpenChange(false);
 
     } catch (error) {
       toast.error("Failed to confirm booking. Please try again.");
+      console.error("Booking submission error:", error);
     } finally {
       setIsSubmitting(false);
     }
